@@ -8,6 +8,8 @@ The current implementation goals for this library are:
 - [X] Manage stack-allocated dynamic arrays.
 - [X] Manage heap-allocated dynamic arrays.
 - [ ] Parse command line arguments.
+- [X] Basic logging.
+- [ ] C-String manipulations.
 
 ## How to use it?
 In order to use the library, you need to define `EXTEND_C` macro at the top of the file and include the `c-extended.h` header file from the repository and you'll have full access to the power of the library.

@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdarg.h>
 
 // This function requires you to free manually the string you get
 // back after calling the function.
@@ -23,6 +24,15 @@ char *read_entire_file(const char *filename);
     fprintf(stderr, msg, ##__VA_ARGS__);  \
     exit(1);                              \
   } while (0)
+
+typedef enum {
+  C_DEBUG,
+  C_INFO,
+  C_WARNING,
+  C_ERROR
+} Log_Level;
+
+void c_log(Log_Level level, const char *msg, ...);
 
 // Dynamic arrays must have the following definition format:
 // struct {
@@ -65,6 +75,7 @@ char *read_entire_file(const char *filename)
   fseek(f, 0, SEEK_SET);
 
   char *str = malloc(sizeof(char) * (len + 1));
+  if (str == NULL) CRASH("buy more ram, lol\n");
   char c;
   int i = 0;
   while ((c = fgetc(f)) != EOF) {
@@ -73,6 +84,31 @@ char *read_entire_file(const char *filename)
   str[i] = '\0';
   fclose(f);
   return str;
+}
+
+void c_log(Log_Level level, const char *msg, ...)
+{
+  FILE *stream = stdout;
+  switch (level) {
+    case C_DEBUG: {
+      fprintf(stream, "[DEBUG] ");
+    } break;
+    case C_INFO: {
+      fprintf(stream, "\033[32m[INFO]\033[0m ");
+    } break;
+    case C_WARNING: {
+      stream = stderr;
+      fprintf(stream, "\033[33m[WARNING]\033[0m ");
+    } break;
+    case C_ERROR: {
+      stream = stderr;
+      fprintf(stream, "\033[31m[ERROR]\033[0m ");
+    } break;
+  }
+  va_list args;
+  va_start(args, msg);
+  vfprintf(stream, msg, args);
+  va_end(args);
 }
 
 #endif
