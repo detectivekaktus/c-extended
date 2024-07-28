@@ -6,7 +6,7 @@ C-extended is a header only library that contains all the necessary tools and bo
 The current implementation goals for this library are:
 - [ ] Reading files.
 - [X] Manage stack-allocated dynamic arrays.
-- [ ] Manage heap-allocated dynamic arrays.
+- [X] Manage heap-allocated dynamic arrays.
 - [ ] Parse command line arguments.
 
 ## How to use it?
