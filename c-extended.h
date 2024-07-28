@@ -12,6 +12,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
+// This function requires you to free manually the string you get
+// back after calling the function.
+char *read_entire_file(const char *filename);
 
 #define CRASH(msg, ...)                   \
   do {                                    \
@@ -49,5 +54,25 @@
     free((da)->items);    \
     free(da);             \
   } while (0)
+
+
+char *read_entire_file(const char *filename)
+{
+  FILE *f = fopen(filename, "r");
+  if (f == NULL) return NULL;
+  fseek(f, 0, SEEK_END);
+  int len = ftell(f);
+  fseek(f, 0, SEEK_SET);
+
+  char *str = malloc(sizeof(char) * (len + 1));
+  char c;
+  int i = 0;
+  while ((c = fgetc(f)) != EOF) {
+    str[i++] = c;
+  }
+  str[i] = '\0';
+  fclose(f);
+  return str;
+}
 
 #endif

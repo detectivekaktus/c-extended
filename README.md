@@ -4,7 +4,7 @@
 C-extended is a header only library that contains all the necessary tools and boilerplate code that you would need to use when writing C. Idealy the library inspires the [nobuild](https://github.com/tsoding/nobuild) library and tries to become similar, yet more powerful and useful.
 
 The current implementation goals for this library are:
-- [ ] Reading files.
+- [X] Reading files.
 - [X] Manage stack-allocated dynamic arrays.
 - [X] Manage heap-allocated dynamic arrays.
 - [ ] Parse command line arguments.
