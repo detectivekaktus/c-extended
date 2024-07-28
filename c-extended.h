@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdarg.h>
+#include <string.h>
 
 typedef struct {
   int argc;
@@ -54,6 +55,12 @@ void c_log(Log_Level level, const char *msg, ...);
 // array as a pointer.
 #define DA_INIT_CAPACITY 64
 
+typedef struct {
+  char *items;
+  size_t size;
+  size_t capacity;
+} CString_Builder;
+
 #define da_heap_alloc(type) (type*) calloc(1, sizeof(type))
 
 #define da_append(da, item)                                                         \
@@ -72,6 +79,19 @@ void c_log(Log_Level level, const char *msg, ...);
   do {                    \
     free((da)->items);    \
     free(da);             \
+  } while (0)
+
+#define sb_append_str(sb, str)                                                        \
+  do {                                                                                \
+    if ((sb)->size + strlen(str) + 1 >= (sb)->capacity) {                             \
+      while ((sb)->size + strlen(str) + 1>= (sb)->capacity)                           \
+        (sb)->capacity = (sb)->capacity == 0 ? DA_INIT_CAPACITY : (sb)->capacity * 2; \
+      (sb)->items = realloc((sb)->items, (sb)->capacity);                             \
+      if ((sb)->items == NULL) CRASH("buy more ram, lol\n");                          \
+    }                                                                                 \
+    (sb)->size -= (sb)->size == 0 ? 0 : 1;                                            \
+    for (int i = 0; i < strlen(str) + 1; i++)                                         \
+      (sb)->items[(sb)->size++] = str[i];                                             \
   } while (0)
 
 
