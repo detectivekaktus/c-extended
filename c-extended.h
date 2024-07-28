@@ -30,6 +30,8 @@
 // array as a pointer.
 #define DA_INIT_CAPACITY 64
 
+#define da_heap_alloc(type) (type*) calloc(1, sizeof(type));
+
 #define da_append(da, item)                                                         \
   do {                                                                              \
     if ((da)->size >= (da)->capacity) {                                             \
@@ -41,5 +43,11 @@
   } while (0)
 
 #define da_free(da) free((da)->items);
+
+#define da_heap_free(da)  \
+  do {                    \
+    free((da)->items);    \
+    free(da);             \
+  } while (0)
 
 #endif
