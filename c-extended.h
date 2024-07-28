@@ -15,6 +15,15 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
+typedef struct {
+  int argc;
+  char **argv;
+  size_t index;
+} Args;
+
+#define init_args(argc, argv) {.argc=argc, .argv=argv, .index=1}
+#define shift_args(args) (args)->argv[(args)->index++]
+
 // This function requires you to free manually the string you get
 // back after calling the function.
 char *read_entire_file(const char *filename);
@@ -45,7 +54,7 @@ void c_log(Log_Level level, const char *msg, ...);
 // array as a pointer.
 #define DA_INIT_CAPACITY 64
 
-#define da_heap_alloc(type) (type*) calloc(1, sizeof(type));
+#define da_heap_alloc(type) (type*) calloc(1, sizeof(type))
 
 #define da_append(da, item)                                                         \
   do {                                                                              \

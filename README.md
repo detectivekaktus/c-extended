@@ -7,7 +7,7 @@ The current implementation goals for this library are:
 - [X] Reading files.
 - [X] Manage stack-allocated dynamic arrays.
 - [X] Manage heap-allocated dynamic arrays.
-- [ ] Parse command line arguments.
+- [X] Parse command line arguments.
 - [X] Basic logging.
 - [ ] C-String manipulations.
 
