@@ -29,10 +29,10 @@ typedef struct {
 // back after calling the function.
 char *read_entire_file(const char *filename);
 
-#define CRASH(msg, ...)                   \
-  do {                                    \
-    fprintf(stderr, msg, ##__VA_ARGS__);  \
-    exit(1);                              \
+#define CRASH(msg)        \
+  do {                    \
+    fprintf(stderr, msg); \
+    exit(1);              \
   } while (0)
 
 typedef enum {
