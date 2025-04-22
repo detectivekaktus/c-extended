@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 CC=gcc
-CFLAGS=("-Wall -Wextra -Werror -std=c99 -pedantic -ggdb3")
+CFLAGS="-Wall -Wextra -Werror -std=c99 -pedantic -ggdb3"
 
 SOURCES=("mygear.c")
 OBJECTS=("mygear.o")
@@ -8,7 +8,7 @@ OBJECTS=("mygear.o")
 BUILD_DIR=bin
 TARGET=libmygear
 
-TESTS=("arrays")
+TESTS=("arrays" "io")
 
 build() {
   mkdir -p $BUILD_DIR
@@ -58,6 +58,7 @@ test() {
     if [ $? -ne 0 ]; then
       exit 1
     fi
+    printf "\n\n"
   done
 }
 

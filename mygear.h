@@ -21,7 +21,7 @@
       (arr)->capacity = (arr)->capacity == 0 ? ARRAY_INIT_CAPACITY : (arr)->capacity * 2; \
       (arr)->items = realloc((arr)->items, sizeof(item) * (arr)->capacity);               \
       if ((arr)->items == NULL) {                                                         \
-        fprintf(stderr, "Could not allocate memory for array: %s", strerror(errno));      \
+        fprintf(stderr, "Could not allocate memory for array: %s\n", strerror(errno));      \
       }                                                                                   \
     }                                                                                     \
     (arr)->items[(arr)->size++] = item;                                                   \
@@ -36,5 +36,8 @@
   } while (0)
 
 #define ARRAY_DELETE_ALL(arr) ARRAY_DELETE_ITEMS(arr); ARRAY_DELETE(arr)
+
+
+char *read_entire_file(const char *filename, size_t *size);
 
 #endif
