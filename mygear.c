@@ -1,4 +1,6 @@
+#define _XOPEN_SOURCE 500
 #include <assert.h>
+#include <ctype.h>
 #include "mygear.h"
 
 char *read_entire_file(const char *filename, size_t *size)
@@ -33,4 +35,41 @@ error:
   if (buffer)
     free(buffer);
   return NULL;
+}
+
+char *trim_leading(char *str)
+{
+  while (isspace(*str)) str++;
+  return str;
+}
+
+void trim_trailing(char *str)
+{
+  size_t n = strlen(str) - 1;
+  if (n <= 0) return;
+  while (isspace(str[n])) n--;
+  str[n + 1] = '\0';
+}
+
+void strsplit(SplitStrings *arr, char *str, const char *delims)
+{
+  assert(delims != NULL);
+  size_t delims_len = strlen(delims);
+  char *prev = str;
+  char *substr = strstr(str, delims);
+  while (substr != NULL) {
+    char buf[1024];
+    size_t n = substr - prev;
+    assert(n < 1024);
+    memcpy(buf, prev, substr - prev);
+    buf[n] = '\0';
+    ARRAY_APPEND(arr, strdup(buf));
+    prev = substr + delims_len;
+    substr = strstr(prev, delims);
+  }
+  char buf[1024];
+  size_t n = strlen(prev);
+  memcpy(buf, prev, n);
+  buf[n] = '\0';
+  ARRAY_APPEND(arr, strdup(buf));
 }

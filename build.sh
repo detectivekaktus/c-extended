@@ -8,7 +8,7 @@ OBJECTS=("mygear.o")
 BUILD_DIR=bin
 TARGET=libmygear
 
-TESTS=("arrays" "io")
+TESTS=("arrays" "io" "string")
 
 build() {
   mkdir -p $BUILD_DIR
@@ -58,7 +58,6 @@ test() {
     if [ $? -ne 0 ]; then
       exit 1
     fi
-    printf "\n\n"
   done
 }
 

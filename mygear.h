@@ -21,7 +21,8 @@
       (arr)->capacity = (arr)->capacity == 0 ? ARRAY_INIT_CAPACITY : (arr)->capacity * 2; \
       (arr)->items = realloc((arr)->items, sizeof(item) * (arr)->capacity);               \
       if ((arr)->items == NULL) {                                                         \
-        fprintf(stderr, "Could not allocate memory for array: %s\n", strerror(errno));      \
+        fprintf(stderr, "Could not allocate memory for array: %s\n", strerror(errno));    \
+        exit(1);                                                                          \
       }                                                                                   \
     }                                                                                     \
     (arr)->items[(arr)->size++] = item;                                                   \
@@ -39,5 +40,15 @@
 
 
 char *read_entire_file(const char *filename, size_t *size);
+char *trim_leading(char *str);
+void trim_trailing(char *str);
+
+typedef struct {
+  size_t size;
+  size_t capacity;
+  char **items;
+} SplitStrings;
+
+void strsplit(SplitStrings *arr, char *str, const char *delims);
 
 #endif

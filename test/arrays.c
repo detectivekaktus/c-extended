@@ -18,9 +18,6 @@ void stack(void)
   assert(stack.size == 128);
   assert(stack.capacity == 128);
 
-  for (size_t i = 0; i < stack.size; i++)
-    printf("%ld: %d\n", i, stack.items[i]);
-
   ARRAY_DELETE(&stack);
 }
 
@@ -41,9 +38,6 @@ void heap(void)
 
   assert(heap.size == 63);
   assert(heap.capacity == 64);
-
-  for (size_t i = 0; i < heap.size; i++)
-    printf("%ld: %s\n", i, heap.items[i]);
 
   ARRAY_DELETE_ALL(&heap);
 }
