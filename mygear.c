@@ -51,24 +51,25 @@ void trim_trailing(char *str)
   str[n + 1] = '\0';
 }
 
-void strsplit(SplitStrings *arr, char *str, const char *delims)
+void strsplit(SplitStrings *arr, size_t size, char *str, const char *delims)
 {
   assert(delims != NULL);
   size_t delims_len = strlen(delims);
   char *prev = str;
   char *substr = strstr(str, delims);
   while (substr != NULL) {
-    char buf[1024];
+    char buf[size];
     size_t n = substr - prev;
-    assert(n < 1024);
+    assert(n < size);
     memcpy(buf, prev, substr - prev);
     buf[n] = '\0';
     ARRAY_APPEND(arr, strdup(buf));
     prev = substr + delims_len;
     substr = strstr(prev, delims);
   }
-  char buf[1024];
+  char buf[size];
   size_t n = strlen(prev);
+  assert(n < size);
   memcpy(buf, prev, n);
   buf[n] = '\0';
   ARRAY_APPEND(arr, strdup(buf));

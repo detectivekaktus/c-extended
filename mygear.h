@@ -38,17 +38,32 @@
 
 #define ARRAY_DELETE_ALL(arr) ARRAY_DELETE_ITEMS(arr); ARRAY_DELETE(arr)
 
-
+// ########################### I/O HANDLING ##############################
+// Returned pointer is allocated with `malloc`, so you have to call `free`
+// on it explicitly.
 char *read_entire_file(const char *filename, size_t *size);
-char *trim_leading(char *str);
-void trim_trailing(char *str);
+// TODO: bool is_file(const char *filepath);
+// TODO: bool is_dir(const char *dirpath);
+// TODO: bool is_dir_empty(const char *dirpath);
+// TODO: int makedir(const char *dirpath);
 
+// ############################# STRINGS #################################
 typedef struct {
   size_t size;
   size_t capacity;
   char **items;
 } SplitStrings;
 
-void strsplit(SplitStrings *arr, char *str, const char *delims);
+char *trim_leading(char *str);
+void trim_trailing(char *str);
+void strsplit(SplitStrings *arr, size_t size, char *str, const char *delims);
+// TODO: void strconcat(const char *dst, const char *src);
+// TODO: void strjoin(const char *dst, const char *src, const char *delims);
+// TODO: void strcapitalize(char *str);
+// TODO: void strlower(char *str);
+// TODO: void strupper(char *str);
+// TODO: bool strstartswith(const char *str, const char *suffix);
+// TODO: bool strendswith(const char *str, const char *suffix);
+// TODO: void strreplace(char *str, size_t size, const char *replacee, const char *replacement);
 
 #endif

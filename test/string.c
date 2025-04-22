@@ -50,13 +50,13 @@ void both(void)
 void splitting(void)
 {
   SplitStrings first = {0};
-  strsplit(&first, "1,2,3,4,5,6,7", ",");
+  strsplit(&first, 32, "1,2,3,4,5,6,7", ",");
   for (size_t i = 0; i < first.size; i++)
     printf("`%s`\n", first.items[i]);
   ARRAY_DELETE_ALL(&first);
 
   SplitStrings second = {0};
-  strsplit(&second, "hi, hello, ciao, hola", ", ");
+  strsplit(&second, 32, "hi, hello, ciao, hola", ", ");
   for (size_t i = 0; i < second.size; i++)
     printf("`%s`\n", second.items[i]);
   ARRAY_DELETE_ALL(&second);
