@@ -31,9 +31,7 @@
   } while (0)
 
 #define ARRAY_DELETE(arr) free((arr)->items)
-
 #define ARRAY_DELETE_ITEMS(arr) for (size_t i = 0; i < (arr)->size; i++) free((arr)->items[i]);
-
 #define ARRAY_DELETE_ALL(arr) ARRAY_DELETE_ITEMS(arr); ARRAY_DELETE(arr)
 
 // ########################### I/O HANDLING ##############################
@@ -76,10 +74,10 @@ void strappend(char *buf, size_t size, const char *src);
 // result: /usr/bin
 void strjoin(char *buf, size_t size, const char *src, const char *delims);
 #define STRCAPITALIZE(str) (str)[0] = toupper((str)[0])
-#define STRLOWER(str) for (size_t i = 0; i < strlen(str); i++) str[i] = tolower(str[i])
-#define STRUPPER(str) for (size_t i = 0; i < strlen(str); i++) str[i] = toupper(str[i])
+#define STRLOWER(str) for (size_t i = 0; i < strlen(str); i++) (str)[i] = tolower((str)[i])
+#define STRUPPER(str) for (size_t i = 0; i < strlen(str); i++) (str)[i] = toupper((str)[i])
 bool strstartswith(const char *str, const char *prefix);
 bool strendswith(const char *str, const char *suffix);
-// TODO: void strreplace(char *str, size_t size, const char *replacee, const char *replacement);
+void strreplace(char *buf, size_t size, size_t memsize, char *str, const char *replacee, const char *replacement);
 
 #endif

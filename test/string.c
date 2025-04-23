@@ -90,6 +90,25 @@ void startend(void)
   assert(strstartswith("/usr/bin", "/usr") && strendswith("/usr/bin", "/bin"));
 }
 
+void replacing(void)
+{
+  char buf1[1024] = {0};
+  strreplace(buf1, sizeof(buf1), 32, "1,2,3,4,5", ",", "|");
+  printf("%s\n", buf1);
+
+  char buf2[1024] = {0};
+  strreplace(buf2, sizeof(buf2), 32, "1,2,3,4,5,", ",", "|");
+  printf("%s\n", buf2);
+
+  char buf3[1024] = {0};
+  strreplace(buf3, sizeof(buf3), 32, "hello, hi, ciao, hola", ", ", ",");
+  printf("%s\n", buf3);
+
+  char buf4[1024] = {0};
+  strreplace(buf4, sizeof(buf4), 32, "hello,hi,ciao,hola", ",", ", ");
+  printf("%s\n", buf4);
+}
+
 int main(void)
 {
   leading();
@@ -99,5 +118,6 @@ int main(void)
 
   appending();
   joining();
+  replacing();
   return 0;
 }

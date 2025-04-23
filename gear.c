@@ -169,3 +169,12 @@ bool strendswith(const char *str, const char *suffix)
     if (str[n - i] != suffix[m - i]) return false;
   return true;
 }
+
+void strreplace(char *buf, size_t size, size_t memsize, char *str, const char *replacee, const char *replacement)
+{
+  SplitStrings arr = {0};
+  strsplit(&arr, memsize, str, replacee);
+  for (size_t i = 0; i < arr.size; i++)
+    strjoin(buf, size, arr.items[i], replacement);
+  ARRAY_DELETE_ALL(&arr);
+}
