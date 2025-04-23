@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <errno.h>
+#include <ctype.h>
 
 // Dynamically allocated arrays are defined with the following signature
 // typedef struct {
@@ -58,11 +59,29 @@ typedef struct {
 char *trim_leading(char *str);
 void trim_trailing(char *str);
 void strsplit(SplitStrings *arr, size_t size, char *str, const char *delims);
-// TODO: void strconcat(const char *dst, const char *src);
-// TODO: void strjoin(const char *dst, const char *src, const char *delims);
-// TODO: void strcapitalize(char *str);
-// TODO: void strlower(char *str);
-// TODO: void strupper(char *str);
+// TODO: return integer instead of asserting the size
+// Example of using `strappend` function:
+//
+// char buf[1024] = {0};
+// strappend(buf, sizeof(buf), "hello ");
+// strappend(buf, sizeof(buf), "world!");
+// printf("%s\n", buf);
+//
+// result: hello world!
+void strappend(char *buf, size_t size, const char *src);
+// TODO: return integer instead of asserting the size
+// Example of using `strjoin` function:
+//
+// char buf[1024] = {0};
+// strjoin(buf, sizeof(buf), "/usr", "/");
+// strjoin(buf, sizeof(buf), "bin", "/");
+// printf("%s\n", buf);
+//
+// result: /usr/bin
+void strjoin(char *buf, size_t size, const char *src, const char *delims);
+#define STRCAPITALIZE(str) (str)[0] = toupper((str)[0])
+#define STRLOWER(str) for (size_t i = 0; i < strlen(str); i++) str[i] = tolower(str[i])
+#define STRLOWER(str) for (size_t i = 0; i < strlen(str); i++) str[i] = toupper(str[i])
 // TODO: bool strstartswith(const char *str, const char *suffix);
 // TODO: bool strendswith(const char *str, const char *suffix);
 // TODO: void strreplace(char *str, size_t size, const char *replacee, const char *replacement);

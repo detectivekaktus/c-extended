@@ -62,11 +62,30 @@ void splitting(void)
   ARRAY_DELETE_ALL(&second);
 }
 
+void appending(void)
+{
+  char buf[1024] = {0};
+  strappend(buf, sizeof(buf), "hello ");
+  strappend(buf, sizeof(buf), "world!");
+  printf("%s\n", buf);
+}
+
+void joining(void)
+{
+  char buf[1024] = {0};
+  strjoin(buf, sizeof(buf), "/usr", "/");
+  strjoin(buf, sizeof(buf), "bin", "/");
+  printf("%s\n", buf);
+}
+
 int main(void)
 {
   leading();
   trailing();
   both();
   splitting();
+
+  appending();
+  joining();
   return 0;
 }

@@ -110,3 +110,26 @@ void strsplit(SplitStrings *arr, size_t size, char *str, const char *delims)
   buf[n] = '\0';
   ARRAY_APPEND(arr, strdup(buf));
 }
+
+void strappend(char *buf, size_t size, const char *src)
+{
+  assert(size >= (*buf == 0) ? strlen(src) + 1 :
+         strlen(buf) + strlen(src) + 1);
+  if (*buf == 0)
+    memcpy(buf, src, strlen(src) + 1);
+  else
+    strcat(buf, src);
+}
+
+void strjoin(char *buf, size_t size, const char *src, const char *delims)
+{
+  size_t delims_n = strlen(delims);
+  assert(size >= (*buf == 0) ? strlen(src) + delims_n + 1 :
+         strlen(buf) + strlen(src) + delims_n + 1);
+  if (*buf == 0)
+    strappend(buf, size, src);
+  else {
+    strappend(buf, size, delims);
+    strappend(buf, size, src);
+  }
+}
