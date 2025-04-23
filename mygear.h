@@ -41,13 +41,15 @@
 #define ARRAY_DELETE_ALL(arr) ARRAY_DELETE_ITEMS(arr); ARRAY_DELETE(arr)
 
 // ########################### I/O HANDLING ##############################
+#define GEAR_MAX_DIRNAME_LENGTH 512 
+#define GEAR_MAX_DIR_CHILDREN   64
 // Returned pointer is allocated with `malloc`, so you have to call `free`
 // on it explicitly.
 char *read_entire_file(const char *filename, size_t *size);
 bool is_file(const char *filepath);
 bool is_dir(const char *dirpath);
 bool is_dir_empty(const char *dirpath);
-// int makedir(const char *dirpath);
+int makedir(char *dirpath);
 
 // ############################# STRINGS #################################
 typedef struct {
@@ -81,7 +83,7 @@ void strappend(char *buf, size_t size, const char *src);
 void strjoin(char *buf, size_t size, const char *src, const char *delims);
 #define STRCAPITALIZE(str) (str)[0] = toupper((str)[0])
 #define STRLOWER(str) for (size_t i = 0; i < strlen(str); i++) str[i] = tolower(str[i])
-#define STRLOWER(str) for (size_t i = 0; i < strlen(str); i++) str[i] = toupper(str[i])
+#define STRUPPER(str) for (size_t i = 0; i < strlen(str); i++) str[i] = toupper(str[i])
 // TODO: bool strstartswith(const char *str, const char *suffix);
 // TODO: bool strendswith(const char *str, const char *suffix);
 // TODO: void strreplace(char *str, size_t size, const char *replacee, const char *replacement);

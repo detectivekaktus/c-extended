@@ -4,6 +4,7 @@
 
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 
 #include "mygear.h"
@@ -71,6 +72,22 @@ bool is_dir_empty(const char *dirpath)
       return false;
   }
   return true;
+}
+
+int makedir(char *dirpath)
+{
+  SplitStrings arr = {0};
+  strsplit(&arr, GEAR_MAX_DIRNAME_LENGTH, dirpath, "/");
+  char buf[GEAR_MAX_DIRNAME_LENGTH * GEAR_MAX_DIR_CHILDREN] = {0};
+  for (size_t i = 0; i < arr.size; i++) {
+    strjoin(buf, sizeof(buf), arr.items[i], "/");
+    if (mkdir(buf, 0777) != 0) {
+      ARRAY_DELETE_ALL(&arr);
+      return 1;
+    }
+  }
+  ARRAY_DELETE_ALL(&arr);
+  return 0;
 }
 
 char *trim_leading(char *str)
