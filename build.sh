@@ -16,11 +16,17 @@ build() {
     for ((i = 0; i < "${#SOURCES[@]}"; i++)); do
       echo "Compiling "${SOURCES[i]}"..."
       $CC $CFLAGS -c "${SOURCES[i]}" -o $BUILD_DIR/"${OBJECTS[i]}"
+      if [ $? -ne 0 ]; then
+        exit 1
+      fi
     done
   else
     for ((i = 0; i < "${#SOURCES[@]}"; i++)); do
       echo "Compiling "${SOURCES[i]}"..."
       $CC $CFLAGS -fPIC -c "${SOURCES[i]}" -o $BUILD_DIR/"${OBJECTS[i]}"
+      if [ $? -ne 0 ]; then
+        exit 1
+      fi
     done
   fi 
 }

@@ -3,9 +3,8 @@
 
 int main(void)
 {
-  size_t size;
-  char *content = read_entire_file("test/io.c", &size);
-  assert(size == 210); // length of this file.
-  free(content);
+  assert(is_file("test/io.c"));
+  assert(is_dir("test"));
+  assert(!is_dir_empty("test"));
   return 0;
 }

@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <errno.h>
 
@@ -42,10 +43,10 @@
 // Returned pointer is allocated with `malloc`, so you have to call `free`
 // on it explicitly.
 char *read_entire_file(const char *filename, size_t *size);
-// TODO: bool is_file(const char *filepath);
-// TODO: bool is_dir(const char *dirpath);
-// TODO: bool is_dir_empty(const char *dirpath);
-// TODO: int makedir(const char *dirpath);
+bool is_file(const char *filepath);
+bool is_dir(const char *dirpath);
+bool is_dir_empty(const char *dirpath);
+// int makedir(const char *dirpath);
 
 // ############################# STRINGS #################################
 typedef struct {

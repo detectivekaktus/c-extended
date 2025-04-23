@@ -1,6 +1,11 @@
 #define _XOPEN_SOURCE 500
 #include <assert.h>
 #include <ctype.h>
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 #include "mygear.h"
 
 char *read_entire_file(const char *filename, size_t *size)
@@ -35,6 +40,37 @@ error:
   if (buffer)
     free(buffer);
   return NULL;
+}
+
+// TODO: convert this function to a macro?
+bool is_file(const char *filepath)
+{
+  return access(filepath, F_OK) == 0;
+}
+
+bool is_dir(const char *dirpath)
+{
+  DIR *dir = opendir(dirpath);
+  if (dir != NULL) {
+    closedir(dir);
+    return true;
+  }
+  return false;
+}
+
+bool is_dir_empty(const char *dirpath)
+{
+  DIR *dir = opendir(dirpath);
+  if (dir == NULL)
+    return false;
+  struct dirent *dirent = readdir(dir);
+  while (dirent != NULL) {
+    if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
+      dirent = readdir(dir);
+    else
+      return false;
+  }
+  return true;
 }
 
 char *trim_leading(char *str)
