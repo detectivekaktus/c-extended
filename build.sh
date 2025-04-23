@@ -2,11 +2,11 @@
 CC=gcc
 CFLAGS="-Wall -Wextra -Werror -std=c99 -pedantic -ggdb3"
 
-SOURCES=("mygear.c")
-OBJECTS=("mygear.o")
+SOURCES=("gear.c")
+OBJECTS=("gear.o")
 
 BUILD_DIR=bin
-TARGET=libmygear
+TARGET=libgear
 
 TESTS=("arrays" "io" "string")
 

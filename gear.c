@@ -1,6 +1,5 @@
 #define _XOPEN_SOURCE 500
 #include <assert.h>
-#include <ctype.h>
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -128,6 +127,7 @@ void strsplit(SplitStrings *arr, size_t size, char *str, const char *delims)
   ARRAY_APPEND(arr, strdup(buf));
 }
 
+// TODO: return integer instead of asserting the size
 void strappend(char *buf, size_t size, const char *src)
 {
   assert(size >= (*buf == 0) ? strlen(src) + 1 :
@@ -138,6 +138,7 @@ void strappend(char *buf, size_t size, const char *src)
     strcat(buf, src);
 }
 
+// TODO: return integer instead of asserting the size
 void strjoin(char *buf, size_t size, const char *src, const char *delims)
 {
   size_t delims_n = strlen(delims);

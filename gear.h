@@ -1,5 +1,5 @@
-#ifndef MY_GEAR_H
-#define MY_GEAR_H
+#ifndef GEAR_H
+#define GEAR_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,7 +61,6 @@ typedef struct {
 char *trim_leading(char *str);
 void trim_trailing(char *str);
 void strsplit(SplitStrings *arr, size_t size, char *str, const char *delims);
-// TODO: return integer instead of asserting the size
 // Example of using `strappend` function:
 //
 // char buf[1024] = {0};
@@ -71,7 +70,6 @@ void strsplit(SplitStrings *arr, size_t size, char *str, const char *delims);
 //
 // result: hello world!
 void strappend(char *buf, size_t size, const char *src);
-// TODO: return integer instead of asserting the size
 // Example of using `strjoin` function:
 //
 // char buf[1024] = {0};
