@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "../mygear.h"
+#include "../gear.h"
 
 int main(void)
 {

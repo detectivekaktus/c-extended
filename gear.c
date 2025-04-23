@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-#include "mygear.h"
+#include "gear.h"
 
 char *read_entire_file(const char *filename, size_t *size)
 {
@@ -150,4 +150,22 @@ void strjoin(char *buf, size_t size, const char *src, const char *delims)
     strappend(buf, size, delims);
     strappend(buf, size, src);
   }
+}
+
+bool strstartswith(const char *str, const char *prefix)
+{
+  assert(strlen(prefix) <= strlen(str));
+  for (size_t i = 0; i < strlen(prefix); i++)
+    if (str[i] != prefix[i]) return false;
+  return true;
+}
+
+bool strendswith(const char *str, const char *suffix)
+{
+  int n = strlen(str);
+  int m = strlen(suffix);
+  assert(m <= n);
+  for (int i = 0; i > -m; i--)
+    if (str[n - i] != suffix[m - i]) return false;
+  return true;
 }

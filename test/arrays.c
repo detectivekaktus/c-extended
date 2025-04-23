@@ -1,7 +1,7 @@
 #define _XOPEN_SOURCE 500
 #include <assert.h>
 
-#include "../mygear.h"
+#include "../gear.h"
 
 typedef struct {
   size_t size;

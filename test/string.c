@@ -1,4 +1,5 @@
-#include "../mygear.h"
+#include <assert.h>
+#include "../gear.h"
 
 void leading(void)
 {
@@ -76,6 +77,17 @@ void joining(void)
   strjoin(buf, sizeof(buf), "/usr", "/");
   strjoin(buf, sizeof(buf), "bin", "/");
   printf("%s\n", buf);
+}
+
+void startend(void)
+{
+  assert(strstartswith("/usr/bin", "/usr"));
+  assert(!strstartswith("/usr/bin", "/bin"));
+
+  assert(strendswith("string", "ing"));
+  assert(!strendswith("string", "cat"));
+
+  assert(strstartswith("/usr/bin", "/usr") && strendswith("/usr/bin", "/bin"));
 }
 
 int main(void)
