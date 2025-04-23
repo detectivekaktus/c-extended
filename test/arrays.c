@@ -4,14 +4,33 @@
 #include "../gear.h"
 
 typedef struct {
+  unsigned char r;
+  unsigned char g;
+  unsigned char b;
+  unsigned char a;
+} Color;
+
+typedef struct {
+  size_t size;
+  size_t capacity;
+  Color *items;
+} ColorArray;
+
+typedef struct {
   size_t size;
   size_t capacity;
   int   *items;
-} StackArray;
+} IntArray;
+
+typedef struct {
+  size_t size;
+  size_t capacity;
+  char  **items;
+} StrArray;
 
 void stack(void)
 {
-  StackArray stack = {0};
+  IntArray stack = {0};
   for (int i = 0; i < 128; i++)
     ARRAY_APPEND(&stack, i);
 
@@ -21,15 +40,9 @@ void stack(void)
   ARRAY_DELETE(&stack);
 }
 
-typedef struct {
-  size_t size;
-  size_t capacity;
-  char  **items;
-} HeapArray;
-
 void heap(void)
 {
-  HeapArray heap = {0};
+  StrArray heap = {0};
   for (int i = 0; i < 63; i++) {
     char buf[32];
     snprintf(buf, sizeof(buf), "Item %d", i);
@@ -42,9 +55,39 @@ void heap(void)
   ARRAY_DELETE_ALL(&heap);
 }
 
+void foreaching(void)
+{
+  IntArray ints = {0};
+  for (int i = 0; i < 10; i++)
+    ARRAY_APPEND(&ints, i);
+  FOREACH(int, num, &ints)
+    printf("%d\n", *num);
+  ARRAY_DELETE(&ints);
+
+  StrArray strs = {0};
+  for (int i = 0; i < 10; i++) {
+    char buf[32];
+    snprintf(buf, sizeof(buf), "Item %d", i);
+    ARRAY_APPEND(&strs, strdup(buf));
+  }
+  FOREACH(char *, str, &strs)
+    printf("%s\n", *str);
+  ARRAY_DELETE_ALL(&strs);
+
+  ColorArray colors = {0};
+  for (int i = 0; i < 10; i++) {
+    Color c = { .r = i, .g = i, .b = i, .a = 255};
+    ARRAY_APPEND(&colors, c);
+  }
+  FOREACH(Color, c, &colors)
+    printf("%d %d %d\n", c->r, c->g, c->b);
+  ARRAY_DELETE(&colors);
+}
+
 int main(void)
 {
   stack();
   heap();
+  foreaching();
   return 0;
 }

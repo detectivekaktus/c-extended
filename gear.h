@@ -34,6 +34,22 @@
 #define ARRAY_DELETE_ITEMS(arr) for (size_t i = 0; i < (arr)->size; i++) free((arr)->items[i]);
 #define ARRAY_DELETE_ALL(arr) ARRAY_DELETE_ITEMS(arr); ARRAY_DELETE(arr)
 
+// Example of using FOREACH on an array
+//
+// typedef struct {
+//    size_t size;
+//    size_t capacity;
+//    int   *items;
+// } IntArray;
+//
+// IntArray arr = {0};
+// for (int i = 0; i < 10; i++)
+//    ARRAY_APPEND(&arr, i);
+//
+// FOREACH(int, num, &arr)
+//    printf("%d", *num);
+#define FOREACH(type, item, arr) for (type *item = (arr)->items; item != (arr)->items + (arr)->size; item++)
+
 // ########################### I/O HANDLING ##############################
 #define GEAR_MAX_DIRNAME_LENGTH 512 
 #define GEAR_MAX_DIR_CHILDREN   64
