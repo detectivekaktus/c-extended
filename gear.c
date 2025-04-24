@@ -178,3 +178,150 @@ void strreplace(char *buf, size_t size, size_t memsize, char *str, const char *r
     strjoin(buf, size, arr.items[i], replacement);
   ARRAY_DELETE_ALL(&arr);
 }
+
+GearMap *map_init(GearMapType key_type, const size_t capacity)
+{
+  GearMap *map = GEAR_NEW(GearMap, 1);
+  if (map == NULL) {
+    fprintf(stderr, "Could not allocate new map: %s\n",
+            strerror(errno));
+    exit(1);
+  }
+  map->key_type = key_type;
+  map->capacity = capacity;
+  map->size = 0;
+  map->slots = GEAR_NEW_CLEAN(GearMapSlot **, map->capacity);
+  if (map->slots == NULL) {
+    fprintf(stderr, "Could not allocate slots for a new map: %s\n",
+            strerror(errno));
+    exit(1);
+  }
+  return map;
+}
+
+size_t hash_integer(long long n, const size_t max)
+{
+  for (int _ = 0; _ < 10; _++) n = (n + 2008) << 3;
+  return (size_t) n % max;
+}
+
+size_t hash_string(const char *str, const size_t max)
+{
+  size_t m = 2008;
+  for (size_t i = 0; i < strlen(str); i++) m = (m - str[i]) >> 3;
+  return m % max;
+}
+
+size_t hash_double(double n, const size_t max)
+{
+  for (int _ = 0; _ < 10; _++) n = (n + 512) * 0.69;
+  return (size_t) n % max;
+}
+
+bool cmpkeys(const GearMapType type, void *key1, void *key2)
+{
+  switch (type) {
+    case MAP_TYPE_STRING: {
+      return strcmp(key1, key2) == 0;
+    } break;
+
+    case MAP_TYPE_INTEGER: {
+      return *((int *)key1) == *((int *)key2);
+    } break;
+
+    case MAP_TYPE_DOUBLE: {
+      return *((double *)key1) == *((double *)key2);
+    } break;
+
+    default: {
+      assert(0 && "unreachable");
+    } break;
+  }
+}
+
+size_t hash_key(const GearMap *map, const void *key)
+{
+  switch (map->key_type) {
+    case MAP_TYPE_STRING: {
+      return hash_string(key, map->capacity);
+    } break;
+
+    case MAP_TYPE_INTEGER: {
+      return hash_integer(*(long long *)key, map->capacity);
+    } break;
+
+    case MAP_TYPE_DOUBLE: {
+      return hash_double(*(double *)key, map->capacity);
+    } break;
+
+    default: {
+      assert(0 && "unreachable");
+    } break;
+  }
+}
+
+// TODO: return int with an error?
+void map_insert(GearMap *map, void *key, void *value)
+{
+  if (map->size++ >= map->capacity)
+    assert(0 && "not implemented");
+
+  size_t hash = hash_key(map, key);
+  
+  GearMapSlot *slot = GEAR_NEW(GearMapSlot, 1);
+  slot->key = key;
+  slot->value = value;
+  
+  if (map->slots[hash] == NULL)
+    map->slots[hash] = slot;
+  else {
+    while (map->slots[hash] != NULL)
+      hash = (hash + 1 >= map->capacity) ? 0 : hash + 1;
+    map->slots[hash] = slot;
+  }
+}
+
+int map_remove(const GearMap *map, void *key)
+{
+  size_t hash = hash_key(map, key);
+  if (cmpkeys(map->key_type, key, map->slots[hash]->key)) {
+    free(map->slots[hash]->value);
+    free(map->slots[hash]);
+  }
+  else {
+    hash = (hash + 1 >= map->capacity) ? 0 : hash + 1;
+    size_t start = hash;
+    while (!cmpkeys(map->key_type, key, map->slots[hash]->key)) {
+      if (hash == start) return 1; // second lap
+      hash = (hash + 1 >= map->capacity) ? 0 : hash + 1;
+    }
+    free(map->slots[hash]->value);
+    free(map->slots[hash]);
+  }
+  return 0;
+}
+
+void *map_find(const GearMap *map, void *key)
+{
+  size_t hash = hash_key(map, key);
+  if (cmpkeys(map->key_type, key, map->slots[hash]->key))
+    return map->slots[hash]->value;
+  else {
+    hash = (hash + 1 >= map->capacity) ? 0 : hash + 1;
+    size_t start = hash;
+    while (!cmpkeys(map->key_type, key, map->slots[hash]->key)) {
+      if (hash == start) return NULL; // second lap
+      hash = (hash + 1 >= map->capacity) ? 0 : hash + 1;
+    }
+    return map->slots[hash]->value;
+  }
+  return NULL;
+}
+
+void map_delete_slots(GearMap *map)
+{
+  for (size_t i = 0; i < map->capacity; i++) {
+    if (map->slots[i] == NULL) continue;
+    free(map->slots[i]);
+  }
+}

@@ -1,3 +1,6 @@
+// TODO: prepend all function and macro names with GEAR_ and gear_
+// for consistency and "namespacing" the functions from other libraries
+// that may be in conflict.
 #ifndef GEAR_H
 #define GEAR_H
 
@@ -135,5 +138,48 @@ void strjoin(char *buf, size_t size, const char *src, const char *delims);
 bool strstartswith(const char *str, const char *prefix);
 bool strendswith(const char *str, const char *suffix);
 void strreplace(char *buf, size_t size, size_t memsize, char *str, const char *replacee, const char *replacement);
+
+// ############################# UTILS #################################
+
+#define GEAR_NEW(_type, n) malloc(sizeof(_type) * n)
+#define GEAR_NEW_CLEAN(_type, n) calloc(n, sizeof(_type))
+
+// TODO: deal with resizing the hashmap when it exceeds the capacity
+// ############################# HASHMAP #################################
+typedef enum {
+  MAP_TYPE_STRING,
+  MAP_TYPE_INTEGER,
+  MAP_TYPE_DOUBLE
+} GearMapType;
+
+typedef struct {
+  void *key;
+  void *value;
+// TODO: void *next;
+} GearMapSlot;
+
+typedef struct {
+  GearMapType key_type;
+  size_t      size;
+  size_t      capacity;
+  GearMapSlot **slots;
+} GearMap;
+
+GearMap *map_init(const GearMapType key_type, const size_t capacity);
+void map_insert(GearMap *map, void *key, void *value);
+int map_remove(const GearMap *map, void *key);
+void *map_find(const GearMap *map, void *key);
+#define MAP_EXISTS(map, key) map_find(map, key) != NULL
+#define MAP_DELETE_ALL(map)   \
+  do {                        \
+    map_delete_slots(map);  \
+    MAP_DELETE(map);          \
+  } while (0)
+void map_delete_slots(GearMap *map);
+#define MAP_DELETE(map) \
+  do {                  \
+    free(map->slots); \
+    free(map);          \
+  } while (0)
 
 #endif
