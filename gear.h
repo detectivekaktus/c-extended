@@ -16,8 +16,7 @@
 // } Array;
 
 #define ARRAY_INIT_CAPACITY 64
-
-#define ARRAY_APPEND(arr, item)                                                           \
+#define ARRAY_GROW(arr, item)                                                             \
   do {                                                                                    \
     if ((arr)->size >= (arr)->capacity) {                                                 \
       (arr)->capacity = (arr)->capacity == 0 ? ARRAY_INIT_CAPACITY : (arr)->capacity * 2; \
@@ -27,7 +26,34 @@
         exit(1);                                                                          \
       }                                                                                   \
     }                                                                                     \
-    (arr)->items[(arr)->size++] = item;                                                   \
+  } while (0)
+
+#define ARRAY_APPEND(arr, item)         \
+  do {                                  \
+    ARRAY_GROW(arr, item);              \
+    (arr)->items[(arr)->size++] = item; \
+  } while (0)
+
+#define ARRAY_PREPEND(arr, item)                                            \
+  do {                                                                      \
+    ARRAY_GROW(arr, item);                                                  \
+    if ((arr)->size == 0)                                                   \
+      ARRAY_APPEND(arr, item);                                              \
+    else {                                                                  \
+      memmove((arr)->items + 1, (arr)->items, sizeof(item) * (arr)->size);  \
+      (arr)->items[0] = item;                                               \
+      (arr)->size++;                                                        \
+    }                                                                       \
+  } while (0)
+
+
+#define ARRAY_REMOVE(arr, index)                                                                                  \
+  do {                                                                                                            \
+    assert(index >= 0);                                                                                           \
+    memmove((arr)->items + index,                                                                                 \
+      (arr)->items + index + 1,                                                                                   \
+      sizeof((arr)->items[0]) * ((arr)->size - index - 1));                                                       \
+    (arr)->size--;                                                                                                \
   } while (0)
 
 #define ARRAY_DELETE(arr) free((arr)->items)

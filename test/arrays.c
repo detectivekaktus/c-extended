@@ -33,9 +33,17 @@ void stack(void)
   IntArray stack = {0};
   for (int i = 0; i < 128; i++)
     ARRAY_APPEND(&stack, i);
+  ARRAY_PREPEND(&stack, 69);
+  ARRAY_PREPEND(&stack, 420);
+
+  ARRAY_REMOVE(&stack, 0);
+  ARRAY_REMOVE(&stack, 0);
+
+  FOREACH(int, num, &stack)
+    printf("%d\n", *num);
 
   assert(stack.size == 128);
-  assert(stack.capacity == 128);
+  assert(stack.capacity == 256);
 
   ARRAY_DELETE(&stack);
 }
