@@ -46,14 +46,28 @@
     }                                                                       \
   } while (0)
 
+#define ARRAY_REMOVE(arr, index)                                    \
+  do {                                                              \
+    assert((long long int)index >= 0 && (arr)->size > 0);           \
+    if ((size_t)index != (arr)->size - 1)                           \
+      memmove((arr)->items + index,                                 \
+              (arr)->items + index + 1,                             \
+              sizeof((arr)->items[0]) * ((arr)->size - index - 1)); \
+    (arr)->size--;                                                  \
+  } while (0)
 
-#define ARRAY_REMOVE(arr, index)                                                                                  \
-  do {                                                                                                            \
-    assert(index >= 0);                                                                                           \
-    memmove((arr)->items + index,                                                                                 \
-      (arr)->items + index + 1,                                                                                   \
-      sizeof((arr)->items[0]) * ((arr)->size - index - 1));                                                       \
-    (arr)->size--;                                                                                                \
+#define ARRAY_REMOVE_BACK(arr) ARRAY_REMOVE(arr, (arr)->size - 1)
+#define ARRAY_REMOVE_FRONT(arr) ARRAY_REMOVE(arr, 0)
+#define ARRAY_POP_BACK(arr, var)          \
+  do {                                    \
+    var = (arr)->items[(arr)->size - 1];  \
+    ARRAY_REMOVE_BACK(arr);               \
+  } while (0)
+
+#define ARRAY_POP_FRONT(arr, var) \
+  do {                            \
+    var = (arr)->items[0];        \
+    ARRAY_REMOVE_FRONT(arr);      \
   } while (0)
 
 #define ARRAY_DELETE(arr) free((arr)->items)

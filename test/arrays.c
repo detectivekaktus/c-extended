@@ -39,10 +39,19 @@ void stack(void)
   ARRAY_REMOVE(&stack, 0);
   ARRAY_REMOVE(&stack, 0);
 
+  ARRAY_REMOVE_FRONT(&stack);
+  ARRAY_REMOVE_BACK(&stack);
+  int a,b;
+  ARRAY_POP_FRONT(&stack, a);
+  ARRAY_POP_BACK(&stack, b);
+  (void)a;
+  (void)b;
+  printf("%d %d\n", a, b);
+
   FOREACH(int, num, &stack)
     printf("%d\n", *num);
 
-  assert(stack.size == 128);
+  assert(stack.size == 124);
   assert(stack.capacity == 256);
 
   ARRAY_DELETE(&stack);
