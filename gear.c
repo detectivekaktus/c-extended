@@ -199,16 +199,24 @@ GearMap *map_init(GearMapType key_type, const size_t capacity)
   return map;
 }
 
-size_t hash_integer(long long n, const size_t max)
+size_t hash_long(long long n, const size_t max)
 {
-  for (int _ = 0; _ < 10; _++) n = (n + 2008) << 3;
+  n *= 2;
+  for (int _ = 0; _ < 10; _++) n = (n - 213) * 2;
+  return (size_t) n % max;
+}
+
+size_t hash_integer(int n, const size_t max)
+{
+  n *= 2;
+  for (int _ = 0; _ < 10; _++) n = (n - 213) * 2;
   return (size_t) n % max;
 }
 
 size_t hash_string(const char *str, const size_t max)
 {
   size_t m = 2008;
-  for (size_t i = 0; i < strlen(str); i++) m = (m - str[i]) >> 3;
+  for (size_t i = 0; i < strlen(str); i++) m = (m - str[i]) * 3;
   return m % max;
 }
 
@@ -229,6 +237,10 @@ bool cmpkeys(const GearMapType type, void *key1, void *key2)
       return *((int *)key1) == *((int *)key2);
     } break;
 
+    case MAP_TYPE_LONG: {
+      return *((long long *)key1) == *((long long *)key2);
+    } break;
+
     case MAP_TYPE_DOUBLE: {
       return *((double *)key1) == *((double *)key2);
     } break;
@@ -247,11 +259,15 @@ size_t hash_key(const GearMap *map, const void *key)
     } break;
 
     case MAP_TYPE_INTEGER: {
-      return hash_integer(*(long long *)key, map->capacity);
+      return hash_integer(*((int *)key), map->capacity);
+    } break;
+
+    case MAP_TYPE_LONG: {
+      return hash_long(*((long long *)key), map->capacity);
     } break;
 
     case MAP_TYPE_DOUBLE: {
-      return hash_double(*(double *)key, map->capacity);
+      return hash_double(*((double *)key), map->capacity);
     } break;
 
     default: {
@@ -307,8 +323,8 @@ void *map_find(const GearMap *map, void *key)
   if (cmpkeys(map->key_type, key, map->slots[hash]->key))
     return map->slots[hash]->value;
   else {
-    hash = (hash + 1 >= map->capacity) ? 0 : hash + 1;
     size_t start = hash;
+    hash = (hash + 1 >= map->capacity) ? 0 : hash + 1;
     while (!cmpkeys(map->key_type, key, map->slots[hash]->key)) {
       if (hash == start) return NULL; // second lap
       hash = (hash + 1 >= map->capacity) ? 0 : hash + 1;
@@ -316,6 +332,34 @@ void *map_find(const GearMap *map, void *key)
     return map->slots[hash]->value;
   }
   return NULL;
+}
+
+void map_delete_kvpairs(GearMap *map)
+{
+  for (size_t i = 0; i < map->capacity; i++) {
+    if (map->slots[i] == NULL) continue;
+    free(map->slots[i]->value);
+    free(map->slots[i]->key);
+    free(map->slots[i]);
+  }
+}
+
+void map_delete_keys(GearMap *map)
+{
+  for (size_t i = 0; i < map->capacity; i++) {
+    if (map->slots[i] == NULL) continue;
+    free(map->slots[i]->key);
+    free(map->slots[i]);
+  }
+}
+
+void map_delete_values(GearMap *map)
+{
+  for (size_t i = 0; i < map->capacity; i++) {
+    if (map->slots[i] == NULL) continue;
+    free(map->slots[i]->value);
+    free(map->slots[i]);
+  }
 }
 
 void map_delete_slots(GearMap *map)

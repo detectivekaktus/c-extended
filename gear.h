@@ -4,6 +4,7 @@
 #ifndef GEAR_H
 #define GEAR_H
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -149,6 +150,7 @@ void strreplace(char *buf, size_t size, size_t memsize, char *str, const char *r
 typedef enum {
   MAP_TYPE_STRING,
   MAP_TYPE_INTEGER,
+  MAP_TYPE_LONG,
   MAP_TYPE_DOUBLE
 } GearMapType;
 
@@ -170,11 +172,9 @@ void map_insert(GearMap *map, void *key, void *value);
 int map_remove(const GearMap *map, void *key);
 void *map_find(const GearMap *map, void *key);
 #define MAP_EXISTS(map, key) map_find(map, key) != NULL
-#define MAP_DELETE_ALL(map)   \
-  do {                        \
-    map_delete_slots(map);  \
-    MAP_DELETE(map);          \
-  } while (0)
+void map_delete_kvpairs(GearMap *map);
+void map_delete_keys(GearMap *map);
+void map_delete_values(GearMap *map);
 void map_delete_slots(GearMap *map);
 #define MAP_DELETE(map) \
   do {                  \

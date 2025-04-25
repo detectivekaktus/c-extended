@@ -8,7 +8,7 @@ OBJECTS=("gear.o")
 BUILD_DIR=bin
 TARGET=libgear
 
-TESTS=("arrays" "io" "string")
+TESTS=("arrays" "io" "string" "map")
 
 build() {
   mkdir -p $BUILD_DIR
