@@ -45,7 +45,7 @@ void intstrmap(void)
 
 void strintmap(void)
 {
-  GearMap *map = map_init(MAP_TYPE_STRING, 64);
+  GearMap *map = map_init(MAP_TYPE_STRING, 2);
   char strs[][16] = {
     "zero",
     "one",
@@ -58,6 +58,8 @@ void strintmap(void)
     *n = i;
     map_insert(map, strdup(strs[i]), n);
   }
+
+  assert(map->capacity == 8);
 
   for (int i = 0; i < 5; i++) {
     assert(MAP_EXISTS(map, strs[i]));

@@ -251,23 +251,23 @@ bool cmpkeys(const GearMapType type, void *key1, void *key2)
   }
 }
 
-size_t hash_key(const GearMap *map, const void *key)
+size_t hash_key(const GearMapType ktype, const size_t capacity, const void *key)
 {
-  switch (map->key_type) {
+  switch (ktype) {
     case MAP_TYPE_STRING: {
-      return hash_string(key, map->capacity);
+      return hash_string(key, capacity);
     } break;
 
     case MAP_TYPE_INTEGER: {
-      return hash_integer(*((int *)key), map->capacity);
+      return hash_integer(*((int *)key), capacity);
     } break;
 
     case MAP_TYPE_LONG: {
-      return hash_long(*((long long *)key), map->capacity);
+      return hash_long(*((long long *)key), capacity);
     } break;
 
     case MAP_TYPE_DOUBLE: {
-      return hash_double(*((double *)key), map->capacity);
+      return hash_double(*((double *)key), capacity);
     } break;
 
     default: {
@@ -276,13 +276,41 @@ size_t hash_key(const GearMap *map, const void *key)
   }
 }
 
+void map_resize(GearMap *map, const size_t nsize)
+{
+  GearMapSlot **new = GEAR_NEW_CLEAN(GearMapSlot *, nsize);
+  if (new == NULL) {
+    fprintf(stderr, "Could not allocate memory for resizing hashmap: %s\n",
+            strerror(errno));
+    exit(1);
+  }
+
+  for (size_t i = 0; i < map->capacity; i++) {
+    GearMapSlot *slot = map->slots[i];
+    if (slot == NULL) continue;
+
+    size_t hash = hash_key(map->key_type, nsize, slot->key);
+    if (new[hash] == NULL)
+      new[hash] = slot;
+    else {
+      while (new[hash] != NULL)
+        hash = (hash + 1 >= nsize) ? 0 : hash + 1;
+      new[hash] = slot;
+    }
+  }
+
+  free(map->slots);
+  map->slots = new;
+  map->capacity = nsize;
+}
+
 // TODO: return int with an error?
 void map_insert(GearMap *map, void *key, void *value)
 {
   if (map->size++ >= map->capacity)
-    assert(0 && "not implemented");
+    map_resize(map, map->capacity * 2);
 
-  size_t hash = hash_key(map, key);
+  size_t hash = hash_key(map->key_type, map->capacity, key);
   
   GearMapSlot *slot = GEAR_NEW(GearMapSlot, 1);
   slot->key = key;
@@ -299,7 +327,7 @@ void map_insert(GearMap *map, void *key, void *value)
 
 int map_remove(const GearMap *map, void *key)
 {
-  size_t hash = hash_key(map, key);
+  size_t hash = hash_key(map->key_type, map->capacity, key);
   if (cmpkeys(map->key_type, key, map->slots[hash]->key)) {
     free(map->slots[hash]->value);
     free(map->slots[hash]);
@@ -319,7 +347,7 @@ int map_remove(const GearMap *map, void *key)
 
 void *map_find(const GearMap *map, void *key)
 {
-  size_t hash = hash_key(map, key);
+  size_t hash = hash_key(map->key_type, map->capacity, key);
   if (cmpkeys(map->key_type, key, map->slots[hash]->key))
     return map->slots[hash]->value;
   else {

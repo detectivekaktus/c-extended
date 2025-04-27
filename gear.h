@@ -145,7 +145,6 @@ void strreplace(char *buf, size_t size, size_t memsize, char *str, const char *r
 #define GEAR_NEW(_type, n) malloc(sizeof(_type) * n)
 #define GEAR_NEW_CLEAN(_type, n) calloc(n, sizeof(_type))
 
-// TODO: deal with resizing the hashmap when it exceeds the capacity
 // ############################# HASHMAP #################################
 typedef enum {
   MAP_TYPE_STRING,
@@ -181,5 +180,7 @@ void map_delete_slots(GearMap *map);
     free(map->slots); \
     free(map);          \
   } while (0)
+
+// TODO: macro for getting the value by key without weird syntax
 
 #endif
