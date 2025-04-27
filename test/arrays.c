@@ -32,29 +32,28 @@ void stack(void)
 {
   IntArray stack = {0};
   for (int i = 0; i < 128; i++)
-    ARRAY_APPEND(&stack, i);
-  ARRAY_PREPEND(&stack, 69);
-  ARRAY_PREPEND(&stack, 420);
+    GEAR_ARRAY_APPEND(&stack, i);
+  GEAR_ARRAY_PREPEND(&stack, 69);
+  GEAR_ARRAY_PREPEND(&stack, 420);
 
-  ARRAY_REMOVE(&stack, 0);
-  ARRAY_REMOVE(&stack, 0);
+  GEAR_ARRAY_REMOVE(&stack, 0);
+  GEAR_ARRAY_REMOVE(&stack, 0);
 
-  ARRAY_REMOVE_FRONT(&stack);
-  ARRAY_REMOVE_BACK(&stack);
+  GEAR_ARRAY_REMOVE_FRONT(&stack);
+  GEAR_ARRAY_REMOVE_BACK(&stack);
   int a,b;
-  ARRAY_POP_FRONT(&stack, a);
-  ARRAY_POP_BACK(&stack, b);
+  GEAR_ARRAY_POP_FRONT(&stack, a);
+  GEAR_ARRAY_POP_BACK(&stack, b);
   (void)a;
   (void)b;
-  printf("%d %d\n", a, b);
 
-  FOREACH(int, num, &stack)
+  GEAR_FOREACH(int, num, &stack)
     printf("%d\n", *num);
 
   assert(stack.size == 124);
   assert(stack.capacity == 256);
 
-  ARRAY_DELETE(&stack);
+  GEAR_ARRAY_DELETE(&stack);
 }
 
 void heap(void)
@@ -63,42 +62,42 @@ void heap(void)
   for (int i = 0; i < 63; i++) {
     char buf[32];
     snprintf(buf, sizeof(buf), "Item %d", i);
-    ARRAY_APPEND(&heap, strdup(buf));
+    GEAR_ARRAY_APPEND(&heap, strdup(buf));
   }
 
   assert(heap.size == 63);
   assert(heap.capacity == 64);
 
-  ARRAY_DELETE_ALL(&heap);
+  GEAR_ARRAY_DELETE_ALL(&heap);
 }
 
 void foreaching(void)
 {
   IntArray ints = {0};
   for (int i = 0; i < 10; i++)
-    ARRAY_APPEND(&ints, i);
-  FOREACH(int, num, &ints)
-    printf("%d\n", *num);
-  ARRAY_DELETE(&ints);
+    GEAR_ARRAY_APPEND(&ints, i);
+  GEAR_FOREACH(int, num, &ints)
+    printf("%d\n", GEAR_FOREACH_GET(num));
+  GEAR_ARRAY_DELETE(&ints);
 
   StrArray strs = {0};
   for (int i = 0; i < 10; i++) {
     char buf[32];
     snprintf(buf, sizeof(buf), "Item %d", i);
-    ARRAY_APPEND(&strs, strdup(buf));
+    GEAR_ARRAY_APPEND(&strs, strdup(buf));
   }
-  FOREACH(char *, str, &strs)
-    printf("%s\n", *str);
-  ARRAY_DELETE_ALL(&strs);
+  GEAR_FOREACH(char *, str, &strs)
+    printf("%s\n", GEAR_FOREACH_GET(str));
+  GEAR_ARRAY_DELETE_ALL(&strs);
 
   ColorArray colors = {0};
   for (int i = 0; i < 10; i++) {
     Color c = { .r = i, .g = i, .b = i, .a = 255};
-    ARRAY_APPEND(&colors, c);
+    GEAR_ARRAY_APPEND(&colors, c);
   }
-  FOREACH(Color, c, &colors)
+  GEAR_FOREACH(Color, c, &colors)
     printf("%d %d %d\n", c->r, c->g, c->b);
-  ARRAY_DELETE(&colors);
+  GEAR_ARRAY_DELETE(&colors);
 }
 
 int main(void)

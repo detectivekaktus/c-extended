@@ -3,8 +3,8 @@
 
 int main(void)
 {
-  assert(is_file("test/io.c"));
-  assert(is_dir("test"));
-  assert(!is_dir_empty("test"));
+  assert(gear_is_file("test/io.c"));
+  assert(gear_is_dir("test"));
+  assert(!gear_is_dir_empty("test"));
   return 0;
 }

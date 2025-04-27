@@ -1,6 +1,4 @@
 #define _XOPEN_SOURCE 500
-#include <assert.h>
-
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -8,7 +6,7 @@
 
 #include "gear.h"
 
-char *read_entire_file(const char *filename, size_t *size)
+char *gear_read_entire_file(const char *filename, size_t *size)
 {
   char *buffer = NULL;
   FILE *f = fopen(filename, "rb");
@@ -43,12 +41,12 @@ error:
 }
 
 // TODO: convert this function to a macro?
-bool is_file(const char *filepath)
+bool gear_is_file(const char *filepath)
 {
   return access(filepath, F_OK) == 0;
 }
 
-bool is_dir(const char *dirpath)
+bool gear_is_dir(const char *dirpath)
 {
   DIR *dir = opendir(dirpath);
   if (dir != NULL) {
@@ -58,7 +56,7 @@ bool is_dir(const char *dirpath)
   return false;
 }
 
-bool is_dir_empty(const char *dirpath)
+bool gear_is_dir_empty(const char *dirpath)
 {
   DIR *dir = opendir(dirpath);
   if (dir == NULL)
@@ -73,29 +71,29 @@ bool is_dir_empty(const char *dirpath)
   return true;
 }
 
-int makedir(char *dirpath)
+int gear_makedir(char *dirpath)
 {
-  SplitStrings arr = {0};
-  strsplit(&arr, GEAR_MAX_DIRNAME_LENGTH, dirpath, "/");
+  GearSplitStrings arr = {0};
+  gear_strsplit(&arr, GEAR_MAX_DIRNAME_LENGTH, dirpath, "/");
   char buf[GEAR_MAX_DIRNAME_LENGTH * GEAR_MAX_DIR_CHILDREN] = {0};
   for (size_t i = 0; i < arr.size; i++) {
-    strjoin(buf, sizeof(buf), arr.items[i], "/");
+    gear_strjoin(buf, sizeof(buf), arr.items[i], "/");
     if (mkdir(buf, 0777) != 0) {
-      ARRAY_DELETE_ALL(&arr);
+      GEAR_ARRAY_DELETE_ALL(&arr);
       return 1;
     }
   }
-  ARRAY_DELETE_ALL(&arr);
+  GEAR_ARRAY_DELETE_ALL(&arr);
   return 0;
 }
 
-char *trim_leading(char *str)
+char *gear_trim_leading(char *str)
 {
   while (isspace(*str)) str++;
   return str;
 }
 
-void trim_trailing(char *str)
+void gear_trim_trailing(char *str)
 {
   size_t n = strlen(str) - 1;
   if (n <= 0) return;
@@ -103,32 +101,32 @@ void trim_trailing(char *str)
   str[n + 1] = '\0';
 }
 
-void strsplit(SplitStrings *arr, size_t size, char *str, const char *delims)
+void gear_strsplit(GearSplitStrings *arr, size_t msize, char *str, const char *delims)
 {
   assert(delims != NULL);
   size_t delims_len = strlen(delims);
   char *prev = str;
   char *substr = strstr(str, delims);
   while (substr != NULL) {
-    char buf[size];
+    char buf[msize];
     size_t n = substr - prev;
-    assert(n < size);
+    assert(n < msize);
     memcpy(buf, prev, substr - prev);
     buf[n] = '\0';
-    ARRAY_APPEND(arr, strdup(buf));
+    GEAR_ARRAY_APPEND(arr, strdup(buf));
     prev = substr + delims_len;
     substr = strstr(prev, delims);
   }
-  char buf[size];
+  char buf[msize];
   size_t n = strlen(prev);
-  assert(n < size);
+  assert(n < msize);
   memcpy(buf, prev, n);
   buf[n] = '\0';
-  ARRAY_APPEND(arr, strdup(buf));
+  GEAR_ARRAY_APPEND(arr, strdup(buf));
 }
 
 // TODO: return integer instead of asserting the size
-void strappend(char *buf, size_t size, const char *src)
+void gear_strappend(char *buf, size_t size, const char *src)
 {
   assert(size >= (*buf == 0) ? strlen(src) + 1 :
          strlen(buf) + strlen(src) + 1);
@@ -139,20 +137,20 @@ void strappend(char *buf, size_t size, const char *src)
 }
 
 // TODO: return integer instead of asserting the size
-void strjoin(char *buf, size_t size, const char *src, const char *delims)
+void gear_strjoin(char *buf, size_t size, const char *src, const char *delims)
 {
   size_t delims_n = strlen(delims);
   assert(size >= (*buf == 0) ? strlen(src) + delims_n + 1 :
          strlen(buf) + strlen(src) + delims_n + 1);
   if (*buf == 0)
-    strappend(buf, size, src);
+    gear_strappend(buf, size, src);
   else {
-    strappend(buf, size, delims);
-    strappend(buf, size, src);
+    gear_strappend(buf, size, delims);
+    gear_strappend(buf, size, src);
   }
 }
 
-bool strstartswith(const char *str, const char *prefix)
+bool gear_strstartswith(const char *str, const char *prefix)
 {
   assert(strlen(prefix) <= strlen(str));
   for (size_t i = 0; i < strlen(prefix); i++)
@@ -160,7 +158,7 @@ bool strstartswith(const char *str, const char *prefix)
   return true;
 }
 
-bool strendswith(const char *str, const char *suffix)
+bool gear_strendswith(const char *str, const char *suffix)
 {
   int n = strlen(str);
   int m = strlen(suffix);
@@ -170,16 +168,16 @@ bool strendswith(const char *str, const char *suffix)
   return true;
 }
 
-void strreplace(char *buf, size_t size, size_t memsize, char *str, const char *replacee, const char *replacement)
+void gear_strreplace(char *buf, size_t size, size_t memsize, char *str, const char *replacee, const char *replacement)
 {
-  SplitStrings arr = {0};
-  strsplit(&arr, memsize, str, replacee);
+  GearSplitStrings arr = {0};
+  gear_strsplit(&arr, memsize, str, replacee);
   for (size_t i = 0; i < arr.size; i++)
-    strjoin(buf, size, arr.items[i], replacement);
-  ARRAY_DELETE_ALL(&arr);
+    gear_strjoin(buf, size, arr.items[i], replacement);
+  GEAR_ARRAY_DELETE_ALL(&arr);
 }
 
-GearMap *map_init(GearMapType key_type, const size_t capacity)
+GearMap *gear_map_init(GearMapType key_type, const size_t capacity)
 {
   GearMap *map = GEAR_NEW(GearMap, 1);
   if (map == NULL) {
@@ -276,7 +274,7 @@ size_t hash_key(const GearMapType ktype, const size_t capacity, const void *key)
   }
 }
 
-void map_resize(GearMap *map, const size_t nsize)
+void gear_map_resize(GearMap *map, const size_t nsize)
 {
   GearMapSlot **new = GEAR_NEW_CLEAN(GearMapSlot *, nsize);
   if (new == NULL) {
@@ -305,10 +303,10 @@ void map_resize(GearMap *map, const size_t nsize)
 }
 
 // TODO: return int with an error?
-void map_insert(GearMap *map, void *key, void *value)
+void gear_map_insert(GearMap *map, void *key, void *value)
 {
   if (map->size++ >= map->capacity)
-    map_resize(map, map->capacity * 2);
+    gear_map_resize(map, map->capacity * 2);
 
   size_t hash = hash_key(map->key_type, map->capacity, key);
   
@@ -325,7 +323,7 @@ void map_insert(GearMap *map, void *key, void *value)
   }
 }
 
-int map_remove(const GearMap *map, void *key)
+int gear_map_remove(const GearMap *map, void *key)
 {
   size_t hash = hash_key(map->key_type, map->capacity, key);
   if (cmpkeys(map->key_type, key, map->slots[hash]->key)) {
@@ -345,7 +343,7 @@ int map_remove(const GearMap *map, void *key)
   return 0;
 }
 
-void *map_find(const GearMap *map, void *key)
+void *gear_map_find(const GearMap *map, void *key)
 {
   size_t hash = hash_key(map->key_type, map->capacity, key);
   if (cmpkeys(map->key_type, key, map->slots[hash]->key))
@@ -362,7 +360,7 @@ void *map_find(const GearMap *map, void *key)
   return NULL;
 }
 
-void map_delete_kvpairs(GearMap *map)
+void gear_map_delete_kvpairs(GearMap *map)
 {
   for (size_t i = 0; i < map->capacity; i++) {
     if (map->slots[i] == NULL) continue;
@@ -372,7 +370,7 @@ void map_delete_kvpairs(GearMap *map)
   }
 }
 
-void map_delete_keys(GearMap *map)
+void gear_map_delete_keys(GearMap *map)
 {
   for (size_t i = 0; i < map->capacity; i++) {
     if (map->slots[i] == NULL) continue;
@@ -381,7 +379,7 @@ void map_delete_keys(GearMap *map)
   }
 }
 
-void map_delete_values(GearMap *map)
+void gear_map_delete_values(GearMap *map)
 {
   for (size_t i = 0; i < map->capacity; i++) {
     if (map->slots[i] == NULL) continue;
@@ -390,7 +388,7 @@ void map_delete_values(GearMap *map)
   }
 }
 
-void map_delete_slots(GearMap *map)
+void gear_map_delete_slots(GearMap *map)
 {
   for (size_t i = 0; i < map->capacity; i++) {
     if (map->slots[i] == NULL) continue;

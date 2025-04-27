@@ -3,49 +3,49 @@
 
 void strstrmap(void)
 {
-  GearMap *map = map_init(MAP_TYPE_STRING, 64);
-  map_insert(map, "hello", "world");
-  map_insert(map, "ciao", "mondo");
-  map_insert(map, "hola", "mundo");
+  GearMap *map = gear_map_init(MAP_TYPE_STRING, 64);
+  gear_map_insert(map, "hello", "world");
+  gear_map_insert(map, "ciao", "mondo");
+  gear_map_insert(map, "hola", "mundo");
 
-  assert(MAP_EXISTS(map, "hello"));
-  printf("%s %s\n", "hello", MAP_GET_STRING(map, "hello"));
-  assert(MAP_EXISTS(map, "ciao"));
-  printf("%s %s\n", "ciao", MAP_GET_STRING(map, "ciao"));
-  assert(MAP_EXISTS(map, "hola"));
-  printf("%s %s\n", "hola", MAP_GET_STRING(map, "hola"));
+  assert(GEAR_MAP_EXISTS(map, "hello"));
+  printf("%s %s\n", "hello", GEAR_MAP_GET_STRING(map, "hello"));
+  assert(GEAR_MAP_EXISTS(map, "ciao"));
+  printf("%s %s\n", "ciao", GEAR_MAP_GET_STRING(map, "ciao"));
+  assert(GEAR_MAP_EXISTS(map, "hola"));
+  printf("%s %s\n", "hola", GEAR_MAP_GET_STRING(map, "hola"));
 
-  map_delete_slots(map);
-  MAP_DELETE(map);
+  gear_map_delete_slots(map);
+  GEAR_MAP_DELETE(map);
 }
 
 void intstrmap(void)
 {
-  GearMap *map = map_init(MAP_TYPE_INTEGER, 64);
+  GearMap *map = gear_map_init(MAP_TYPE_INTEGER, 64);
   int *zero = GEAR_NEW(int, 1);
   *zero = 0;
-  map_insert(map, zero, "zero");
+  gear_map_insert(map, zero, "zero");
   int *one = GEAR_NEW(int, 1);
   *one = 1;
-  map_insert(map, one, "one");
+  gear_map_insert(map, one, "one");
   int *two = GEAR_NEW(int, 1);
   *two = 2;
-  map_insert(map, two, "two");
+  gear_map_insert(map, two, "two");
 
-  assert(MAP_EXISTS(map, zero));
-  printf("%d %s\n", 0, MAP_GET_STRING(map, zero));
-  assert(MAP_EXISTS(map, one));
-  printf("%d %s\n", 1, MAP_GET_STRING(map, one));
-  assert(MAP_EXISTS(map, two));
-  printf("%d %s\n", 2, MAP_GET_STRING(map, two));
+  assert(GEAR_MAP_EXISTS(map, zero));
+  printf("%d %s\n", 0, GEAR_MAP_GET_STRING(map, zero));
+  assert(GEAR_MAP_EXISTS(map, one));
+  printf("%d %s\n", 1, GEAR_MAP_GET_STRING(map, one));
+  assert(GEAR_MAP_EXISTS(map, two));
+  printf("%d %s\n", 2, GEAR_MAP_GET_STRING(map, two));
 
-  map_delete_keys(map);
-  MAP_DELETE(map);
+  gear_map_delete_keys(map);
+  GEAR_MAP_DELETE(map);
 }
 
 void strintmap(void)
 {
-  GearMap *map = map_init(MAP_TYPE_STRING, 2);
+  GearMap *map = gear_map_init(MAP_TYPE_STRING, 2);
   char strs[][16] = {
     "zero",
     "one",
@@ -56,18 +56,18 @@ void strintmap(void)
   for (int i = 0; i < 5; i++) {
     int *n = GEAR_NEW(int, 1);
     *n = i;
-    map_insert(map, strdup(strs[i]), n);
+    gear_map_insert(map, strdup(strs[i]), n);
   }
 
   assert(map->capacity == 8);
 
   for (int i = 0; i < 5; i++) {
-    assert(MAP_EXISTS(map, strs[i]));
-    printf("%s: %d\n", strs[i], MAP_GET(map, int, strs[i]));
+    assert(GEAR_MAP_EXISTS(map, strs[i]));
+    printf("%s: %d\n", strs[i], GEAR_MAP_GET(map, int, strs[i]));
   }
 
-  map_delete_kvpairs(map);
-  MAP_DELETE(map);
+  gear_map_delete_kvpairs(map);
+  GEAR_MAP_DELETE(map);
 }
 
 
