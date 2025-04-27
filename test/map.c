@@ -9,11 +9,11 @@ void strstrmap(void)
   map_insert(map, "hola", "mundo");
 
   assert(MAP_EXISTS(map, "hello"));
-  printf("%s %s\n", "hello", (char *)map_find(map, "hello"));
+  printf("%s %s\n", "hello", MAP_GET_STRING(map, "hello"));
   assert(MAP_EXISTS(map, "ciao"));
-  printf("%s %s\n", "ciao", (char *)map_find(map, "ciao"));
+  printf("%s %s\n", "ciao", MAP_GET_STRING(map, "ciao"));
   assert(MAP_EXISTS(map, "hola"));
-  printf("%s %s\n", "hola", (char *)map_find(map, "hola"));
+  printf("%s %s\n", "hola", MAP_GET_STRING(map, "hola"));
 
   map_delete_slots(map);
   MAP_DELETE(map);
@@ -33,11 +33,11 @@ void intstrmap(void)
   map_insert(map, two, "two");
 
   assert(MAP_EXISTS(map, zero));
-  printf("%d %s\n", 0, (char *)map_find(map, zero));
+  printf("%d %s\n", 0, MAP_GET_STRING(map, zero));
   assert(MAP_EXISTS(map, one));
-  printf("%d %s\n", 1, (char *)map_find(map, one));
+  printf("%d %s\n", 1, MAP_GET_STRING(map, one));
   assert(MAP_EXISTS(map, two));
-  printf("%d %s\n", 2, (char *)map_find(map, two));
+  printf("%d %s\n", 2, MAP_GET_STRING(map, two));
 
   map_delete_keys(map);
   MAP_DELETE(map);
@@ -63,7 +63,7 @@ void strintmap(void)
 
   for (int i = 0; i < 5; i++) {
     assert(MAP_EXISTS(map, strs[i]));
-    printf("%s: %d\n", strs[i], *(int *)map_find(map, strs[i]));
+    printf("%s: %d\n", strs[i], MAP_GET(map, int, strs[i]));
   }
 
   map_delete_kvpairs(map);

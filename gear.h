@@ -170,17 +170,18 @@ GearMap *map_init(const GearMapType key_type, const size_t capacity);
 void map_insert(GearMap *map, void *key, void *value);
 int map_remove(const GearMap *map, void *key);
 void *map_find(const GearMap *map, void *key);
-#define MAP_EXISTS(map, key) map_find(map, key) != NULL
 void map_delete_kvpairs(GearMap *map);
 void map_delete_keys(GearMap *map);
 void map_delete_values(GearMap *map);
 void map_delete_slots(GearMap *map);
+
+#define MAP_GET(map, _type, key) *(_type *)map_find(map, key)
+#define MAP_GET_STRING(map, key) (char *)map_find(map, key)
+#define MAP_EXISTS(map, key) map_find(map, key) != NULL
 #define MAP_DELETE(map) \
   do {                  \
     free(map->slots); \
     free(map);          \
   } while (0)
-
-// TODO: macro for getting the value by key without weird syntax
 
 #endif
