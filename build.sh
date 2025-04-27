@@ -12,7 +12,15 @@ TESTS=("arrays" "io" "string" "map")
 
 build() {
   mkdir -p $BUILD_DIR
-  if [ -z $1 ]; then
+  if [ "$1" = "fpic" ]; then
+    for ((i = 0; i < "${#SOURCES[@]}"; i++)); do
+      echo "Compiling fPIC "${SOURCES[i]}"..."
+      $CC $CFLAGS -fPIC -c "${SOURCES[i]}" -o $BUILD_DIR/"${OBJECTS[i]}"
+      if [ $? -ne 0 ]; then
+        exit 1
+      fi
+    done
+  elif [ -z "$1" ]; then
     for ((i = 0; i < "${#SOURCES[@]}"; i++)); do
       echo "Compiling "${SOURCES[i]}"..."
       $CC $CFLAGS -c "${SOURCES[i]}" -o $BUILD_DIR/"${OBJECTS[i]}"
@@ -21,13 +29,8 @@ build() {
       fi
     done
   else
-    for ((i = 0; i < "${#SOURCES[@]}"; i++)); do
-      echo "Compiling "${SOURCES[i]}"..."
-      $CC $CFLAGS -fPIC -c "${SOURCES[i]}" -o $BUILD_DIR/"${OBJECTS[i]}"
-      if [ $? -ne 0 ]; then
-        exit 1
-      fi
-    done
+    echo "Unknown arg for build $1"
+    exit 1
   fi 
 }
 
@@ -38,7 +41,7 @@ static() {
 }
 
 dynamic() {
-  build
+  build fpic
   echo "Creating shared library from object files..."
   $CC $CFLAGS -shared -o $TARGET.so $BUILD_DIR/$OBJECTS
 }
@@ -87,7 +90,7 @@ case $1 in
     clean 
     ;;
   *)
-    if [ "$1" = "" ]; then
+    if [ -z "$1" ]; then
       static 
     else
       echo "Unknown command ${1}"

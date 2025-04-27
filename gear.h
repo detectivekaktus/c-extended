@@ -124,9 +124,9 @@ void gear_trim_trailing(char *str);
 // char str[64] = "string to split in substrings"
 // GearSplitStrings arr = {0};
 // gear_strsplit(&arr, sizeof(str), str, " ");
-// FOREACH(char *, str, &arr)
-//   printf("%s\n", *str);
-// ARRAY_DELETE_ALL(&arr);
+// GEAR_FOREACH(char *, s, &arr)
+//   printf("%s\n", GEAR_FOREACH_GET(s));
+// GEAR_ARRAY_DELETE_ALL(&arr);
 //  
 // result: string
 //         to
@@ -183,7 +183,7 @@ bool gear_strendswith(const char *str, const char *suffix);
 // Example of using `gear_strreplace` function:
 //
 // char buf[1024] = {0};
-// strreplace(buf, sizeof(buf), 32, "hello, hi, ciao, hola", ", ", "|");
+// gear_strreplace(buf, sizeof(buf), 32, "hello, hi, ciao, hola", ", ", "|");
 // printf("%s\n", buf);
 //
 // result: hello|hi|ciao|hola
